@@ -174,7 +174,7 @@
                             </div>
                         </div>
                     </div>
- 
+
                     <div class="mt-4" id="presets-1-wrapper">
                         <p class="text-sm text-slate-600 mb-2">Presets (sets Color 1):</p>
                         <div class="flex flex-wrap gap-2">
@@ -206,7 +206,7 @@
                             <div class="swatch w-8 h-8 rounded-full cursor-pointer" style="background-color: #E76F51" data-color="#E76F51"></div>
                         </div>
                     </div>
- 
+
                     <div class="mt-4 hidden" id="presets-2-wrapper">
                         <p class="text-sm text-slate-600 mb-2">Presets (sets Color 2):</p>
                         <div class="flex flex-wrap gap-2">
@@ -217,7 +217,7 @@
                             <div class="swatch w-8 h-8 rounded-full cursor-pointer bg-blue-500" data-color="#3B82F6"></div>
                             <div class="swatch w-8 h-8 rounded-full cursor-pointer bg-green-500" data-color="#22C55E"></div>
                             <div class="swatch w-8 h-8 rounded-full cursor-pointer bg-yellow-400" data-color="#FACC15"></div>
-                             <!-- Pantone Matte Greens -->
+                                <!-- Pantone Matte Greens -->
                             <div class="swatch w-8 h-8 rounded-full cursor-pointer" style="background-color: #9DBA94" data-color="#9DBA94"></div>
                             <div class="swatch w-8 h-8 rounded-full cursor-pointer" style="background-color: #748B75" data-color="#748B75"></div>
                             <div class="swatch w-8 h-8 rounded-full cursor-pointer" style="background-color: #4A624A" data-color="#4A624A"></div>
@@ -256,7 +256,7 @@
                 </button>
             </div>
             <div id="image-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                </div>
+            </div>
             <div id="loading-spinner" class="text-center p-8 hidden">
                 <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                 <p class="mt-4 text-slate-600">Generating your images...</p>
@@ -490,7 +490,7 @@
             function updateGenerateButtonState() {
                 const isBgTypeImage = document.querySelector('input[name="bg-type"]:checked').value === 'image';
                 const isBgReady = isBgTypeImage ? !!selectedBgImage : true;
-                // CHANGE 1: Allow generation without a logo
+                // Allow generation without a logo
                 generateBtn.disabled = !isBgReady;
             }
             
@@ -528,13 +528,20 @@
                         const bgImgAspect = bgImg.width / bgImg.height;
                         let sx = 0, sy = 0, sWidth = bgImg.width, sHeight = bgImg.height;
 
-                        if (canvasAspect > bgImgAspect) { // Canvas is wider, crop sides
+                        // --- CORRECTED LOGIC FOR "COVER" EFFECT ---
+                        // This logic calculates the source rectangle (sx, sy, sWidth, sHeight) from the background image
+                        // to effectively "cover" the destination canvas, cropping the image as needed while maintaining aspect ratio.
+                        if (bgImgAspect > canvasAspect) { // Background image is wider than the canvas
+                            // Use full image height, calculate width to match canvas aspect, then center horizontally.
                             sHeight = bgImg.height;
                             sWidth = sHeight * canvasAspect;
                             sx = (bgImg.width - sWidth) / 2;
-                        } else { // Canvas is taller, crop top/bottom
+                            sy = 0;
+                        } else { // Background image is taller than or same aspect as the canvas
+                            // Use full image width, calculate height to match canvas aspect, then center vertically.
                             sWidth = bgImg.width;
                             sHeight = sWidth / canvasAspect;
+                            sx = 0;
                             sy = (bgImg.height - sHeight) / 2;
                         }
                         ctx.drawImage(bgImg, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
@@ -563,7 +570,7 @@
                         ctx.filter = 'none';
                     }
                     
-                    // CHANGE 1: Only draw logos if one has been uploaded
+                    // Only draw logos if one has been uploaded
                     if (uploadedLogo) {
                         // 3. Calculate main logo dimensions & draw
                         const paddingPercent = 0.70;
@@ -657,7 +664,6 @@
             });
 
             // --- Initial Setup ---
-            // CHANGE 2: Add background image uploader
             const bgUploadInput = document.createElement('input');
             bgUploadInput.type = 'file';
             bgUploadInput.id = 'bg-image-upload';
