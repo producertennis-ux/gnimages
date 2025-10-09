@@ -600,8 +600,8 @@
                     }
 
                     // 5. Get data URL & create card
-                    const dataUrl = canvas.toDataURL('image/png');
-                    generatedImages.push({ name: `image-${size.width}x${size.height}.png`, dataUrl });
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+                    generatedImages.push({ name: `image-${size.width}x${size.height}.jpg`, dataUrl });
                     createImageCard(dataUrl, `${size.width} x ${size.height}`);
                 }
                 
